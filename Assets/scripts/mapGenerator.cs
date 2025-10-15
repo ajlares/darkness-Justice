@@ -1,7 +1,8 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Fusion;
 
-public class mapGenerator : MonoBehaviour
+public class mapGenerator : NetworkBehaviour
 {
     private List<List<float>> mapVertexs;
     public int mapSquaresAmount;
