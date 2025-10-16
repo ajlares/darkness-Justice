@@ -388,7 +388,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0fd4ef2312a6748b7e149ee7684e93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::mapGenerator
-  mapSquaresAmount: 100
+  mapSquaresAmount: 5936547
   squereSprite: {fileID: 7482667652216324306, guid: 80cbe6fa49ca0b943b06f91ebb221730, type: 3}
 --- !u!114 &1479836676
 MonoBehaviour:
