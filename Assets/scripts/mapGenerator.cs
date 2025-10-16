@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using System.Collections.Generic;
 using Fusion;
@@ -41,10 +42,14 @@ public class mapGenerator : NetworkBehaviour
                 square.GetComponent<CellValue>().SetCellValue(true);
                 temp.Add(square);
             }
-            map.Add(temp);
         }
         Debug.Log(map.Count);
     }
-    
+
+    private IEnumerator updatemap()
+    {
+        
+        yield return null;
+    }
     
 }
