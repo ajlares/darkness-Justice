@@ -21,8 +21,6 @@ public class mapGenerator : NetworkBehaviour
         {
             return;
         }
-        // segun copilot y stack overflow lo que hace esta linea es usando la funcion math.sqrt es sacar la raiz del numero requerido 
-        // y luego usa la funcion ceiltoint para general un grid del tamaño de esa raiz 
         int gridSize = Mathf.CeilToInt(Mathf.Sqrt(mapSquaresAmount));
         float spacing = 1f;
         for (int x = 0; x < gridSize; x++)
@@ -44,12 +42,69 @@ public class mapGenerator : NetworkBehaviour
             }
         }
         Debug.Log(map.Count);
+        StartCoroutine(updatemap());
     }
 
     private IEnumerator updatemap()
     {
-        
-        yield return null;
+        int gridSize = map.Count;
+        if (gridSize == 0 || map[0].Count == 0)
+        {
+            yield break;
+        }
+        List<Vector2Int> allCoords = new List<Vector2Int>();
+        for (int x = 0; x < gridSize; x++)
+        {
+            for (int y = 0; y < map[x].Count; y++)
+            {
+                allCoords.Add(new Vector2Int(x, y));
+            }
+        }
+        Shuffle(allCoords);
+        int quarterCount = Random.Range(2, 9);
+        List<List<Vector2Int>> quarters = new List<List<Vector2Int>>();
+        for (int i = 0; i < quarterCount; i++)
+        {
+            quarters.Add(new List<Vector2Int>());
+        }
+        for (int i = 0; i < allCoords.Count; i++)
+        {
+            int groupIndex = i % quarterCount;
+            quarters[groupIndex].Add(allCoords[i]);
+        }
+        foreach (var quarter in quarters)
+        {
+            foreach (var coord in quarter)
+            {
+                UpdateCell(coord.x, coord.y);
+            }
+            yield return new WaitForSeconds(0.5f);
+        }
     }
+
+    private void UpdateCell(int x, int y)
+    {
+        if (x < map.Count && y < map[x].Count)
+        {
+            CellValue cell = map[x][y].GetComponent<CellValue>();
+            if (cell != null)
+            {
+                bool newValue = !cell.GetCellValue();
+                cell.SetCellValue(newValue);
+            }
+        }
+    }
+    private void Shuffle<T>(List<T> list)
+    {
+        for (int i = 0; i < list.Count; i++)
+        {
+            int randIndex = Random.Range(i, list.Count);
+            T temp = list[i];
+            list[i] = list[randIndex];
+            list[randIndex] = temp;
+        }
+    }
+    
+
     
 }
