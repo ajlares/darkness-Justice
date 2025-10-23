@@ -30,7 +30,6 @@ public class mapGenerator : NetworkBehaviour
             {
                 int index = x * gridSize + y;
                 if (index >= mapSquaresAmount) return;
-
                 GameObject square = new GameObject("Square_" + index);
                 square.transform.position = new Vector3(x * spacing, y * spacing, 0);
                 square.transform.parent = this.transform;
@@ -40,6 +39,7 @@ public class mapGenerator : NetworkBehaviour
                 square.GetComponent<CellValue>().SetCellValue(true);
                 temp.Add(square);
             }
+            map.Add(temp);
         }
         Debug.Log(map.Count);
         StartCoroutine(updatemap());
@@ -50,6 +50,7 @@ public class mapGenerator : NetworkBehaviour
         int gridSize = map.Count;
         if (gridSize == 0 || map[0].Count == 0)
         {
+            Debug.Log("no map");
             yield break;
         }
         List<Vector2Int> allCoords = new List<Vector2Int>();
@@ -61,7 +62,7 @@ public class mapGenerator : NetworkBehaviour
             }
         }
         Shuffle(allCoords);
-        int quarterCount = Random.Range(2, 9);
+        int quarterCount = Random.Range(10, 20);
         List<List<Vector2Int>> quarters = new List<List<Vector2Int>>();
         for (int i = 0; i < quarterCount; i++)
         {
@@ -72,6 +73,7 @@ public class mapGenerator : NetworkBehaviour
             int groupIndex = i % quarterCount;
             quarters[groupIndex].Add(allCoords[i]);
         }
+        
         foreach (var quarter in quarters)
         {
             foreach (var coord in quarter)
@@ -79,6 +81,11 @@ public class mapGenerator : NetworkBehaviour
                 UpdateCell(coord.x, coord.y);
             }
             yield return new WaitForSeconds(0.5f);
+            if (CheckMap())
+            {
+                Debug.Log("map generated");
+                yield break;
+            }
         }
     }
 
@@ -104,7 +111,11 @@ public class mapGenerator : NetworkBehaviour
             list[randIndex] = temp;
         }
     }
-    
 
+    private bool CheckMap()
+    {
+        
+        return false;
+    }
     
 }
