@@ -44,7 +44,6 @@ public class mapGenerator : NetworkBehaviour
         Debug.Log(map.Count);
         StartCoroutine(updatemap());
     }
-
     private IEnumerator updatemap()
     {
         int gridSize = map.Count;
@@ -80,12 +79,12 @@ public class mapGenerator : NetworkBehaviour
             {
                 UpdateCell(coord.x, coord.y);
             }
-            yield return new WaitForSeconds(0.5f);
             if (CheckMap())
             {
                 Debug.Log("map generated");
                 yield break;
             }
+            yield return new WaitForSeconds(0.5f);
         }
     }
 
@@ -111,11 +110,49 @@ public class mapGenerator : NetworkBehaviour
             list[randIndex] = temp;
         }
     }
-
     private bool CheckMap()
     {
-        
-        return false;
+        int width = map.Count;
+        if (width == 0 || map[0].Count == 0) return false;
+        int height = map[0].Count;
+        Vector2Int[] directions = new Vector2Int[]
+        {
+            new Vector2Int(-1, 0),  // izquierda
+            new Vector2Int(1, 0),   // derecha
+            new Vector2Int(0, -1),  // abajo
+            new Vector2Int(0, 1),   // arriba
+        };
+
+        for (int x = 0; x < width; x++)
+        {
+            for (int y = 0; y < height; y++)
+            {
+                CellValue cell = map[x][y].GetComponent<CellValue>();
+                if (cell != null && !cell.GetCellValue())
+                {
+                    bool hasWhiteNeighbor = false;
+                    foreach (var dir in directions)
+                    {
+                        int nx = x + dir.x;
+                        int ny = y + dir.y;
+                        if (nx >= 0 && nx < width && ny >= 0 && ny < height)
+                        {
+                            CellValue neighbor = map[nx][ny].GetComponent<CellValue>();
+                            if (neighbor != null && !neighbor.GetCellValue())
+                            {
+                                hasWhiteNeighbor = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (!hasWhiteNeighbor)
+                    {
+                        return false;
+                    }
+                }
+            }
+        }
+        return true;
     }
     
 }
